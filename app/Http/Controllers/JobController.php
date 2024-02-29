@@ -12,16 +12,19 @@ class JobController extends Controller
      */
     public function index()
     {
-        $jobs = Job::query();
 
-        $jobs->when(request('search'),
-            fn($query) => $query->where('title', 'like', '%' . request('search') . '%')
-                ->orWhere('description', 'like', '%' . request('search') . '%')
-        )->filterBySalaryRange(request('min_salary'), request('max_salary'))
-            ->when(request('experience'), fn($query) => $query->where('experience', request('experience')))
-            ->when(request('category'), fn($query) => $query->where('category', request('category')));
+        $filters = request()->only(
+            'search',
+            'min_salary',
+            'max_salary',
+            'experience',
+            'category'
+        );
 
-        return view('job.index', ['jobs' => $jobs->get()]);
+        return view(
+            'job.index',
+            ['jobs' => Job::with('employer')->filter($filters)->get()]
+        );
     }
 
     /**
@@ -45,7 +48,10 @@ class JobController extends Controller
      */
     public function show(Job $job)
     {
-        return view('job.show', compact('job'));
+        return view(
+            'job.show',
+            ['job' => $job->load('employer')]
+        );
     }
 
     /**
