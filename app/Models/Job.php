@@ -27,6 +27,14 @@ class Job extends Model
         'Marketing'
     ];
 
+    protected $fillable = [
+        'title',
+        'location',
+        'salary',
+        'description',
+        'experience',
+        'category'
+    ];
     public function jobApplications(): HasMany
     {
         return $this->hasMany(JobApplication::class);
