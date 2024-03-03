@@ -18,6 +18,7 @@ class MyJobApplicationController extends Controller
                             ->withAvg('jobApplications', 'expected_salary'),
                         'job.employer'
                     ])
+                    ->withTrashed()
                     ->latest()->get()
             ]
         );
